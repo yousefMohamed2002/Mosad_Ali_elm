@@ -14,7 +14,10 @@ const App = () => {
   const isRtl = lang === 'ar';
 
   const userData = {
-    nameToSave: "Mosad Ali", 
+    firstName: "Mosad",
+    lastName: "Ali",
+    fullNameEn: "Mosad Ali",
+    fullNameAr: "مسعد علي",
     phone: "+201119222530",
     whatsapp: "https://wa.me/201119222530",
     email: "mosad.ali@elmdevelopments.com", 
@@ -22,20 +25,27 @@ const App = () => {
   };
 
   const downloadVCard = () => {
+    // Determine names based on current language for the save file
+    const displayName = isRtl ? userData.fullNameAr : userData.fullNameEn;
+    const lastName = isRtl ? "" : userData.lastName;
+    const firstName = isRtl ? userData.fullNameAr : userData.firstName;
+
     const vcardContent = `BEGIN:VCARD
 VERSION:3.0
-FN:${userData.nameToSave}
+FN:${displayName}
+N:${lastName};${firstName};;;
 TEL;TYPE=CELL:${userData.phone}
-EMAIL:${userData.email}
+EMAIL;TYPE=INTERNET:${userData.email}
 ORG:èlm Developments
 TITLE:Head of Sales
 END:VCARD`;
 
-    const blob = new Blob([vcardContent], { type: 'text/vcard' });
+    // Added charset=utf-8 for better Arabic support and compatibility
+    const blob = new Blob([vcardContent], { type: 'text/vcard;charset=utf-8' });
     const url = window.URL.createObjectURL(blob);
     const link = document.createElement('a');
     link.href = url;
-    link.setAttribute('download', `${userData.nameToSave}.vcf`);
+    link.setAttribute('download', `${displayName}.vcf`);
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -94,9 +104,7 @@ END:VCARD`;
           {/* Main Profile Card */}
           <div className="md:col-span-8 bg-[#0f110e] border border-white/5 rounded-[2.5rem] p-8 md:p-10 flex flex-col md:flex-row gap-8 items-center">
             
-            {/* المربع الخلفي كبير (w-28 h-28) */}
             <div className="w-28 h-28 bg-[#71815d] rounded-2xl flex items-center justify-center overflow-hidden shadow-lg shrink-0 border border-white/5">
-              {/* الصورة صغيرة (w-14 h-14) داخل المربع الكبير */}
               <img
                 src={profileImg} 
                 alt="èlm"
@@ -165,9 +173,9 @@ END:VCARD`;
 
         </div>
 
-   <footer className="mt-16 pb-8 text-center opacity-40 text-[8px] font-bold tracking-[0.6em] uppercase text-white">
-  Designed by CraftHub © 2026
-</footer>
+        <footer className="mt-16 pb-8 text-center opacity-40 text-[8px] font-bold tracking-[0.6em] uppercase text-white">
+          Designed by CraftHub © 2026
+        </footer>
       </div>
 
       <style dangerouslySetInnerHTML={{ __html: `
